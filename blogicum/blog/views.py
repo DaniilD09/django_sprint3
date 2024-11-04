@@ -1,3 +1,4 @@
+import constants
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 
@@ -17,7 +18,8 @@ def posts():
 
 
 def index(request):
-    return render(request, 'blog/index.html', {'post_list': posts()[:5]})
+    post_list = posts()[:constants.POST_PAGE]
+    return render(request, 'blog/index.html', {'post_list': post_list})
 
 
 def post_detail(request, post_id):

@@ -1,20 +1,19 @@
+import constants
 from core.models import PublishedModel
 from django.contrib.auth import get_user_model
 from django.db import models
 
 User = get_user_model()
-TEXT_LENGTH = 256
 
 
 class PublishModel(models.Model):
     class Meta:
         abstract = True
-        ordering = ['created_at']
 
 
 class Category(PublishedModel):
     title = models.CharField(
-        max_length=TEXT_LENGTH,
+        max_length=constants.TEXT_LENGTH,
         verbose_name='Заголовок'
     )
     description = models.TextField(
@@ -37,7 +36,7 @@ class Category(PublishedModel):
 
 class Location(PublishedModel):
     name = models.CharField(
-        max_length=TEXT_LENGTH,
+        max_length=constants.TEXT_LENGTH,
         verbose_name='Название места'
     )
 
@@ -51,7 +50,7 @@ class Location(PublishedModel):
 
 class Post(PublishedModel):
     title = models.CharField(
-        max_length=TEXT_LENGTH,
+        max_length=constants.TEXT_LENGTH,
         verbose_name='Заголовок'
     )
     text = models.TextField(
