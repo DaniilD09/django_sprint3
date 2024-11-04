@@ -1,15 +1,25 @@
-from django.db import models
 from core.models import PublishedModel
-
 from django.contrib.auth import get_user_model
-
+from django.db import models
 
 User = get_user_model()
+TEXT_LENGTH = 256
+
+
+class PublishModel(models.Model):
+    class Meta:
+        abstract = True
+        ordering = ['created_at']
 
 
 class Category(PublishedModel):
-    title = models.CharField(max_length=256, verbose_name='Заголовок')
-    description = models.TextField(verbose_name='Описание')
+    title = models.CharField(
+        max_length=TEXT_LENGTH,
+        verbose_name='Заголовок'
+    )
+    description = models.TextField(
+        verbose_name='Описание'
+    )
     slug = models.SlugField(
         unique=True,
         verbose_name='Идентификатор',
@@ -17,7 +27,7 @@ class Category(PublishedModel):
                   'разрешены символы латиницы, цифры, дефис и подчёркивание.'
     )
 
-    class Meta:
+    class Meta(PublishModel.Meta):
         verbose_name = 'категория'
         verbose_name_plural = 'Категории'
 
@@ -26,9 +36,12 @@ class Category(PublishedModel):
 
 
 class Location(PublishedModel):
-    name = models.CharField(max_length=256, verbose_name='Название места')
+    name = models.CharField(
+        max_length=TEXT_LENGTH,
+        verbose_name='Название места'
+    )
 
-    class Meta:
+    class Meta(PublishModel.Meta):
         verbose_name = 'местоположение'
         verbose_name_plural = 'Местоположения'
 
@@ -37,8 +50,13 @@ class Location(PublishedModel):
 
 
 class Post(PublishedModel):
-    title = models.CharField(max_length=256, verbose_name='Заголовок')
-    text = models.TextField(verbose_name='Текст')
+    title = models.CharField(
+        max_length=TEXT_LENGTH,
+        verbose_name='Заголовок'
+    )
+    text = models.TextField(
+        verbose_name='Текст'
+    )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -66,7 +84,7 @@ class Post(PublishedModel):
                   'можно делать отложенные публикации.'
     )
 
-    class Meta:
+    class Meta(PublishModel.Meta):
         verbose_name = 'публикация'
         verbose_name_plural = 'Публикации'
 
