@@ -1,30 +1,25 @@
-import constants
 from django.shortcuts import get_object_or_404, render
-from django.utils import timezone
 
 from .models import Category, Post
-
-
-def posts():
-    return Post.objects.select_related(
-        'category',
-        'location',
-        'author'
-    ).filter(
-        is_published=True,
-        category__is_published=True,
-        pub_date__lte=timezone.now()
-    )
+from blogicum.constants import POST_PER_PAGE
 
 
 def index(request):
-    post_list = posts()[:constants.POST_PAGE]
-    return render(request, 'blog/index.html', {'post_list': post_list})
+    return render(
+        request,
+        'blog/index.html',
+        {'post_list': Post.published_objects.all()[:POST_PER_PAGE]}
+    )
 
 
 def post_detail(request, post_id):
-    post = get_object_or_404(posts(), id=post_id)
-    return render(request, 'blog/detail.html', {'post': post})
+
+    return render(
+        request,
+        'blog/detail.html',
+        {'post': get_object_or_404(Post.published_objects.all(),
+         id=post_id)}
+    )
 
 
 def category_posts(request, category_slug):
@@ -33,10 +28,8 @@ def category_posts(request, category_slug):
         slug=category_slug,
         is_published=True
     )
-    return render(request, 'blog/category.html',
-                  {'category': category,
-                   'post_list': posts().filter(category=category)})
-
-# Привет я оставил [:5] и в models.py TEXT_LENGTH = 256, правильно ли понимаю,
-# что мне нужно сделать отдельный файл с константами и туда их все запихнуть а
-# потом их наследовать?
+    return render(
+        request,
+        'blog/category.html',
+        {'category': category,
+         'post_list': Post.published_objects.filter(category=category)})

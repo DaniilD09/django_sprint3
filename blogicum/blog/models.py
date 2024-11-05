@@ -1,19 +1,15 @@
-import constants
-from core.models import PublishedModel
 from django.contrib.auth import get_user_model
 from django.db import models
 
+from core.models import PublishedModel
+from blogicum.constants import TEXT_LENGHT
+from blogicum.managers import PublishedRecordingsManager
 User = get_user_model()
-
-
-class PublishModel(models.Model):
-    class Meta:
-        abstract = True
 
 
 class Category(PublishedModel):
     title = models.CharField(
-        max_length=constants.TEXT_LENGTH,
+        max_length=TEXT_LENGHT,
         verbose_name='Заголовок'
     )
     description = models.TextField(
@@ -26,21 +22,21 @@ class Category(PublishedModel):
                   'разрешены символы латиницы, цифры, дефис и подчёркивание.'
     )
 
-    class Meta(PublishModel.Meta):
+    class Meta(PublishedModel.Meta):
         verbose_name = 'категория'
         verbose_name_plural = 'Категории'
 
     def __str__(self):
-        return self.title
+        return self.title[:TEXT_LENGHT]
 
 
 class Location(PublishedModel):
     name = models.CharField(
-        max_length=constants.TEXT_LENGTH,
+        max_length=TEXT_LENGHT,
         verbose_name='Название места'
     )
 
-    class Meta(PublishModel.Meta):
+    class Meta(PublishedModel.Meta):
         verbose_name = 'местоположение'
         verbose_name_plural = 'Местоположения'
 
@@ -50,7 +46,7 @@ class Location(PublishedModel):
 
 class Post(PublishedModel):
     title = models.CharField(
-        max_length=constants.TEXT_LENGTH,
+        max_length=TEXT_LENGHT,
         verbose_name='Заголовок'
     )
     text = models.TextField(
@@ -82,10 +78,13 @@ class Post(PublishedModel):
         help_text='Если установить дату и время в будущем — '
                   'можно делать отложенные публикации.'
     )
+    objects = models.Manager()
+    published_objects = PublishedRecordingsManager()
 
-    class Meta(PublishModel.Meta):
+    class Meta(PublishedModel.Meta):
         verbose_name = 'публикация'
         verbose_name_plural = 'Публикации'
+        ordering = ['-created_at']
 
     def __str__(self):
         return self.title
