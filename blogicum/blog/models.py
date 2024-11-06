@@ -3,7 +3,8 @@ from django.db import models
 
 from core.models import PublishedModel
 from blogicum.constants import TEXT_LENGHT
-from blogicum.managers import PublishedRecordingsManager
+from .managers import PublishedRecordingsManager
+
 User = get_user_model()
 
 
@@ -41,7 +42,7 @@ class Location(PublishedModel):
         verbose_name_plural = 'Местоположения'
 
     def __str__(self):
-        return self.name
+        return self.name[:TEXT_LENGHT]
 
 
 class Post(PublishedModel):
@@ -78,13 +79,14 @@ class Post(PublishedModel):
         help_text='Если установить дату и время в будущем — '
                   'можно делать отложенные публикации.'
     )
+
     objects = models.Manager()
-    published_objects = PublishedRecordingsManager()
+    published_posts = PublishedRecordingsManager()
 
     class Meta(PublishedModel.Meta):
         verbose_name = 'публикация'
         verbose_name_plural = 'Публикации'
-        ordering = ['-created_at']
+        ordering = ['-pub_date']
 
     def __str__(self):
         return self.title

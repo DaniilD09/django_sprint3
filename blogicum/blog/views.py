@@ -8,17 +8,18 @@ def index(request):
     return render(
         request,
         'blog/index.html',
-        {'post_list': Post.published_objects.all()[:POST_PER_PAGE]}
+        {'post_list': Post.published_posts.all()[:POST_PER_PAGE]}
     )
 
 
 def post_detail(request, post_id):
-
     return render(
         request,
         'blog/detail.html',
-        {'post': get_object_or_404(Post.published_objects.all(),
-         id=post_id)}
+        {'post': get_object_or_404(
+         Post.published_posts.all(),
+         id=post_id
+         )}
     )
 
 
@@ -32,5 +33,5 @@ def category_posts(request, category_slug):
         request,
         'blog/category.html',
         {'category': category,
-         'post_list': Post.published_objects.filter(category=category)})
+         'post_list': category.posts(manager='published_posts').all()})
 # заглянику в админку есть изменения
