@@ -33,3 +33,4 @@ def category_posts(request, category_slug):
         'blog/category.html',
         {'category': category,
          'post_list': Post.published_objects.filter(category=category)})
+# заглянику в админку есть изменения
